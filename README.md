@@ -1,2 +1,2 @@
 # flow-graph-designer
-可视化方式创建流程图的React组件。
+A react component that make flow graph by drag & drop.

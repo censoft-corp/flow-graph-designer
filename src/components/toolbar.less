@@ -1,0 +1,39 @@
+@icon-wrap-width: 30px;
+@icon-wrap-height: 30px;
+@icon-width: 24px;
+@icon-height: 24px;
+:local(.mainClass) {
+  margin-left: 1px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  writing-mode: vertical-lr;
+  align-content: flex-start;
+  background-color: #ddd;
+  border-right: 1px solid #444;
+  padding: 2px;
+  .icon-wrap {
+    width: @icon-wrap-width;
+    height: @icon-wrap-height;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    writing-mode: horizontal-tb;
+    margin: 2px;
+    &:hover {
+      outline: 1px solid blue;
+      background-color: lightseagreen;
+    }
+  }
+  .icon {
+    pointer-events: none;
+    width: @icon-width;
+    height: @icon-height;
+    background-size: contain;
+    >img {
+      display: block;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
