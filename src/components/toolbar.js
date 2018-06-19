@@ -4,7 +4,7 @@ import css from "./toolbar.less";
 
 const DRAG_IMAGE_DOM_ID = "flow-icon-draged-image";
 class Toolbar extends React.Component {
-  handleDragStart({ id, typeId, title }) {
+  handleDragStart({ typeId, title }) {
     return e => {
       e.dataTransfer.setData("dragId", typeId);
       e.dataTransfer.setData("nodeName", title);
@@ -48,7 +48,6 @@ class Toolbar extends React.Component {
               title={nodeEntity[x].basePropsData.title}
               draggable="true"
               onDragStart={this.handleDragStart({
-                id: x,
                 typeId: nodeEntity[x].basePropsData.typeId,
                 title: nodeEntity[x].basePropsData.title,
               })}
