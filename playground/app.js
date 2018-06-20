@@ -190,9 +190,9 @@ class App extends Component {
   // fire when flow has been changed.
   onChange({ data, detail }) {
     console.log("you change the flow.", data, detail);
-    this.setState({
-      data,
-    });
+    // this.setState({
+    //   data,
+    // });
   }
   // fire when node has been clicked.
   onClickNode(node) {

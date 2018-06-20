@@ -153,7 +153,7 @@ export function getNewFlowAndCopyDetailByCopy({
   containerIndex,
 }) {
   let copyDetail = [];
-  const newFlow = produce(config, draft => {
+  const data = produce(config, draft => {
     const sourceParentNode = getParentNodeById(draft, sourceId);
     const sourceIndex = sourceParentNode.children.findIndex(
       x => x.id === sourceId
@@ -178,7 +178,7 @@ export function getNewFlowAndCopyDetailByCopy({
     containerNode.children.splice(containerIndex, 0, copyResult.node);
   });
   return {
-    newFlow,
+    data,
     copyDetail,
   };
 }

@@ -138,13 +138,13 @@ class Workspace extends React.Component {
       return;
     }
     if (containerId === "recycle") {
-      const newData = getNewFlowByDel({
+      const data = getNewFlowByDel({
         config: this.state.data,
         sourceId,
       });
       if (this.props.onChange && typeof this.props.onChange === "function") {
         this.props.onChange({
-          data: newData,
+          data,
           detail: {
             action: "del",
             position: { id: sourceParentNode, index: sourceIndex },
@@ -153,12 +153,13 @@ class Workspace extends React.Component {
         });
       }
       this.handleClearState();
+      this.setState({ data });
       return;
     }
-    const { data } = this.props;
+    const { data: prevData } = this.state;
     const action =
       e.nativeEvent.ctrlKey || e.nativeEvent.metaKey ? "copy" : "move";
-    const sourceParentNode = getParentNodeById(data, sourceId);
+    const sourceParentNode = getParentNodeById(prevData, sourceId);
     const sourceIndex = sourceParentNode.children.findIndex(
       x => x.id === sourceId
     );
@@ -173,15 +174,15 @@ class Workspace extends React.Component {
       }
     }
     if (action === "copy") {
-      const { newData, copyDetail } = getNewFlowAndCopyDetailByCopy({
-        config: data,
+      const { data, copyDetail } = getNewFlowAndCopyDetailByCopy({
+        config: prevData,
         sourceId,
         containerId,
         containerIndex,
       });
       if (this.props.onChange && typeof this.props.onChange === "function") {
         this.props.onChange({
-          data: newData,
+          data,
           detail: {
             action: "copy",
             position: { id: sourceParentNode.id, index: sourceIndex },
@@ -192,17 +193,18 @@ class Workspace extends React.Component {
         });
       }
       this.handleClearState();
+      this.setState({ data });
       return;
     } else if (action === "move") {
-      const newData = getNewFlowByMove({
-        config: data,
+      const data = getNewFlowByMove({
+        config: prevData,
         sourceId,
         containerId,
         containerIndex,
       });
       if (this.props.onChange && typeof this.props.onChange === "function") {
         this.props.onChange({
-          data: newData,
+          data,
           detail: {
             action: "move",
             position: { id: sourceParentNode.id, index: sourceIndex },
@@ -212,6 +214,7 @@ class Workspace extends React.Component {
         });
       }
       this.handleClearState();
+      this.setState({ data });
       return;
     }
   }
@@ -378,8 +381,10 @@ class Workspace extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     // render 函数将根据 state 中的 data 进行渲染
     // state 中的 data 除了会被 props 更新外，也会被用户的拖拽操作设置
-    const dataFromProps = JSON.stringify(nextProps.data || {});
-    if (dataFromProps !== prevState.dataFromProps) {
+    const dataFromProps = JSON.stringify(
+      nextProps.data || { id: "root", children: [] }
+    );
+    if (!prevState.dataFromProps || dataFromProps !== prevState.dataFromProps) {
       // 如果 props 中的 data 发生了变化，修改 state 中的 data
       return {
         dataFromProps: JSON.stringify(nextProps.data), // 记录每次从 props 获取到的 data 对象
