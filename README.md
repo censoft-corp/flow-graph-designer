@@ -57,7 +57,8 @@ or
 npm run start
 ```
 
-**watch demo**
+**playground**
+
 there is a playground site.The url is  http://localhost:8080/
 
 ![playground image](https://raw.githubusercontent.com/censoft-corp/flow-graph-designer/master/playground.png)
