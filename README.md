@@ -34,7 +34,7 @@ React.render(
 git clone https://github.com/censoft-corp/flow-graph-designer.git
 ```
 
-**init***
+**init**
 ```
 yarn
 ```
@@ -45,7 +45,7 @@ or
 npm install
 ```
 
-**start***
+**start**
 ```
 yarn run start
 ```
