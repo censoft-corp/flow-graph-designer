@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import getDesigner from "../src";
 import { render } from "react-dom";
 import jsBeautify from "js-beautify";
-
+import process from "immer";
 const template = {
   id: "default",
   nodes: [
@@ -100,7 +100,7 @@ const template = {
           "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACJklEQVRYR+2W/VHDMAzF2wmADcoEwASECYAJKBMAE1A2gAkIEwATUDaACQgTABvwfpzFKW4SOylc/6nudGlcfTw9W3LGoxXLeMX5R2sAuQxMtFWH0kK6GZ6fer5IK+mD9FnKWi9JASDxpXSaEZXk19KrDNtfky4AR7K6DRX7mFRqAhs7UUJYOQ7MJLG0AaBikpu868dMCtUxzbCE/bl0IzhgcyAFTKc0AaDye+d1od9QmxLYAOC+A7HdALgWJwZAkDcpT+RUWqYyR/9jfxLWAMR2tEoMwDtzmGY9k5s51NvZAABAGsUDoOqPYMWeTwYmx62QPgX/Rz3Z1iSAqSzs4A2hflf+Z9IbKQxQNbMD4SxUUmzYHjrphxXPgHfY0n99h4rRbh1AMivI2hJWYBobctQAzPXOCX4NSBsp61ikU2AAIQHdYwAorgjJ+R+WaNsaAJzoY+jBeIiUcrIOIJ51k491p5epLfgt+AsAxPUg4iJqyWMG5lpgC9jLvSHlO58mEAvJYwDLHsIYswfRmDwGwL4s04ZNpM3Coj0XbNoGUSVLevff5b9GcTbwpsuI6u1aHTIRs5PHZ8Acmdv+Omb/cr5y6HkGEYOs9fKJ0eV+kMAKQLhY4hE90RrDh8lmg6frS6uGIfVJVrrtMMe5i0By1EuvUZ5CSnAqt/EaM+jfv/TCfYB9tqQAWCCAcDaKQLN9dnFvVFJYKbOzOsNcAENiZ/msAaycgW+J3mkhydo2VQAAAABJRU5ErkJggg==",
         props: {
           typeId: "loop",
-          title: "循环结构",
+          title: "循环",
           type: "loop",
           showInToolbar: "Y",
         },
@@ -112,7 +112,7 @@ const template = {
           "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB/UlEQVRYR+2X61HDMBCESQVABZgKgAowFUAqwFQAVICpgFABpgLogNABVICpAKgA9vPoMo7jh6TAH8Y3szO2Iu3tnXTWZbIRZ4mWHQtbwovwLHzGUE0iFs205ryxrtT71IkJogwVkIv9ykXMM0Y2EPUtHAiI8bYQAaT7Q3gV9hseUr0/CfdC5u1dE0MEmJMzrStanMw1tiPs/rUA9vqxQwDbAbwtJAMQv3Wkme3hN6rhxNt74BbAS+SU34Vw6xzh/EFIhSOBrfC2kAxAijMc7AnUfSnYgew6G71iQgWYCNJMFhDCyS9CIzdVMQJsba4HvgnrcKy1eBTwfzNArW96FHKiOYCy9DW+HUtf0bYTzK327mrcl9hn3qEmXQts3cK6BKxM9PEwMIfARgFjBgYzQFlxrxcCt9tvmbVzK7xWBUy4E+rNBNftpRMTKwTeGyGrESzxmgB6e7ta+VCQCRYxFnXPO4d9vAQ3QwD3OiqrgZpSaz6s0Qz949HFiwuEVbwImLuIibppbAntVnCr5Xjplgiki3dqApiQtkxkjH4/5stIYIO8CLBGc1vPzTTnGqPriclAH28mTg59lQFLc6FnzoGJIH1E/yUkLdkZGrLsIYSD3MprVYDzU6F0sNThHCIOTYzVeeHgPMC34K3fhpl+sE6XCSjPa4JiBLCml/cHy1eLUeryVeAAAAAASUVORK5CYII=",
         props: {
           typeId: "switch",
-          title: "判断结构",
+          title: "判断",
           type: "switch",
           showInToolbar: "Y",
         },
@@ -160,7 +160,7 @@ const template = {
           "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACbElEQVRYR+2W+zFDURDGpQJUICogFYgKUIGrAlSAClCBqAAViApQgagAFfD94qzZHOdxuWPyj53ZyT2v3e98+zjpLcxZenP2v9AVwLYusC8dRhe51nhP+lq7YBcAIxnfLTgYaO3hrwA0MnwRjN/o90w6kfbDHN9oVXIMQO2a9DJjCGoXpThn768lBWBd1u7d7WIH/varbW+aQ5gCAI3EjhueSw+iwyONif2jFLCdJBcCQKDjhPWJ5lakJ9LjTt51+KdVsKQzL8Hpjn4pt06SC8GGrJKACExwYwTKyXikkU7C95t+qyWXQpoCgCEqwOp4rG8A1cTbAiiVYgD9WXIK5qZrKQDvYbetDTU+DnMYJjnjGwPS76GKALAcoW40pn/gnAr6BgBnt9Jchlv9lxIQ44QMkOSMF7PP3KZ0HDPALY6kqfLra/4pWJsejowzbKTWIXN7DCA51sQAiM2WlIdkFDmgIV2FOahNPTRmvNQh7ZLsXY0BGMWpDmcHn3UQNmLxHbT0EA11kDAjPQ8Ao1Ccih2bx1KqIXe7GkAD7HvJpgfQaAfxyzmoJaCFL5U/MVtWaTMAaDD8uUhluLGDoVxyGUO1Fu0ZGHgGrAGlHLRJwLYAsjkQNyBPW5v4tgVgtqa9xne7UgOqJaBP0loOGNPTfQbAUOUOGzul+JqNOxmG5pR4+mc6YakB+frOJSDOfpInX73EGCg1ICtPnOQ6IGs+uw81tmfbmOAVPA2Dr04LgL601IDaJKA5GemDv2upMFgezawBAOQcZEOM2qhl3t7xdHQ/ZwkXe1HC6oUQNcHOxBbit6Bk/E/W/gHMnYEP3H2i0RNyIRUAAAAASUVORK5CYII=",
         props: {
           typeId: "case",
-          title: "判断条件节点",
+          title: "条件",
           type: "case",
           showInToolbar: "N",
           description: "判断结构自带，不用在工具栏显示",
@@ -183,23 +183,42 @@ class App extends Component {
     super(props);
     this.state = {
       data: { id: "root", children: [] },
+      actions: [],
     };
     this.onChange = this.onChange.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
   // fire when flow has been changed.
   onChange({ data, detail }) {
     console.log("you change the flow.", data, detail);
-    // this.setState({
-    //   data,
-    // });
+    const actions = process(this.state.actions, draft => {
+      draft.splice(0, 0, {
+        index: draft.length + 1,
+        ...detail,
+      });
+    });
+    this.setState({
+      data,
+      actions,
+    });
   }
   // fire when node has been clicked.
-  onClickNode(node) {
-    console.log(`you click node(${node})`);
+  onClick(node) {
+    const actions = process(this.state.actions, draft => {
+      draft.splice(0, 0, {
+        index: draft.length + 1,
+        action: "click",
+        nodes: [node],
+      });
+    });
+    this.setState({
+      actions,
+    });
   }
 
   render() {
+    const tableStyle = { border: "1px solid lightblue", textAlign: "center" };
     const flowStr = JSON.stringify(this.state.data);
     const flowText = beautifyConfig(flowStr);
     return (
@@ -209,18 +228,7 @@ class App extends Component {
             flexGrow: 0,
             border: "1px solid red",
             margin: "10px",
-            padding: "1px",
-            overflow: "auto",
-            width: "50%",
-          }}>
-          <pre>{flowText}</pre>
-        </div>
-        <div
-          style={{
-            flexGrow: 0,
-            border: "1px solid red",
-            margin: "10px",
-            width: "50%",
+            width: "30%",
           }}>
           <Designer
             template={template}
@@ -228,6 +236,59 @@ class App extends Component {
             onChange={this.onChange}
             onClick={this.onClick}
           />
+        </div>
+        <div
+          style={{
+            flexGrow: 0,
+            border: "1px solid red",
+            margin: "10px",
+            padding: "1px",
+            overflow: "auto",
+            width: "30%",
+          }}>
+          输出流程对象：
+          <pre>{flowText}</pre>
+        </div>
+        <div
+          style={{
+            flexGrow: 0,
+            border: "1px solid red",
+            margin: "10px",
+            padding: "1px",
+            overflow: "auto",
+            width: "30%",
+          }}>
+          操作历史记录：
+          <table style={{ ...tableStyle, width: "100%" }}>
+            <thead>
+              <tr style={tableStyle}>
+                <th style={tableStyle}>序号</th>
+                <th style={tableStyle}>动作</th>
+                <th style={tableStyle}>位置</th>
+                <th style={tableStyle}>节点</th>
+                <th style={tableStyle}>位置2</th>
+                <th style={tableStyle}>节点2</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.actions.map(x => (
+                <tr style={tableStyle} key={x.index}>
+                  <td style={tableStyle}>{x.index}</td>
+                  <td style={tableStyle}>{x.action}</td>
+                  <td style={tableStyle}>
+                    {x.position ? `${x.position.id}[${x.position.index}]` : ""}
+                  </td>
+                  <td style={tableStyle}>{(x.nodes || []).join(",")}</td>
+                  <td style={tableStyle}>
+                    {x.position2
+                      ? `${x.position2.id}[${x.position2.index}]`
+                      : ""}
+                  </td>
+                  <td style={tableStyle}>{(x.nodes2 || []).join(",")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     );

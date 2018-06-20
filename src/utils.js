@@ -62,8 +62,12 @@ export function getcopyResultById(config, id, newIdFunc) {
   copyResult.node = copydNode;
   return copyResult;
 }
+/**
+ * 返回添加节点后的新流程对象，以及被添加的节点id数组
+ * @param {*} param0
+ */
 export function getNewFlowByAdd({ config, node, containerId, containerIndex }) {
-  const newConfig = produce(config, draft => {
+  const flow = produce(config, draft => {
     const containerNode = getNodeById(draft, containerId);
     // 【判断节点】不接受从图标栏拖拽其他节点
     if (containerNode.type === "switch") {
@@ -74,7 +78,8 @@ export function getNewFlowByAdd({ config, node, containerId, containerIndex }) {
     }
     containerNode.children.splice(containerIndex, 0, node);
   });
-  return newConfig;
+  const nodes = getAllId(node);
+  return { flow, nodes };
 }
 
 // 返回包含节点及其子节点的所有ID的数组
@@ -91,14 +96,24 @@ export function getAllId(node) {
   pushId(node);
   return ids;
 }
-
+/**
+ * 返回删除节点后的新流程对象，以及被删除的节点id数组
+ * @param {*} param0
+ */
 export function getNewFlowByDel({ config, sourceId }) {
-  const newConfig = produce(config, draft => {
+  const nodes = [];
+  const flow = produce(config, draft => {
     const sourceParentNode = getParentNodeById(draft, sourceId);
     const sourceIndex = sourceParentNode.children.findIndex(
       x => x.id === sourceId
     );
     const sourceNode = sourceParentNode.children[sourceIndex];
+    if (sourceNode.children && sourceNode.children.length) {
+      const shouldDeleteNodeIds = getAllId(sourceNode);
+      for (let i = 0; i < shouldDeleteNodeIds.length; i += 1) {
+        nodes.push(shouldDeleteNodeIds[i]);
+      }
+    }
     // 删除移动的节点
     sourceParentNode.children.splice(sourceIndex, 1);
     // 如果拖拽的节点是条件分支并且是唯一分支，删除整个判断流程
@@ -108,10 +123,11 @@ export function getNewFlowByDel({ config, sourceId }) {
         x => x.id === sourceParentNode.id
       );
       switchParentNode.children.splice(switchIndex, 1);
+      nodes.push(sourceParentNode.id);
     }
     return;
   });
-  return newConfig;
+  return { flow, nodes };
 }
 export function getNewFlowByMove({
   config,
@@ -119,12 +135,14 @@ export function getNewFlowByMove({
   containerId,
   containerIndex,
 }) {
-  const newConfig = produce(config, draft => {
+  let nodes = [];
+  const flow = produce(config, draft => {
     const sourceParentNode = getParentNodeById(draft, sourceId);
     const sourceIndex = sourceParentNode.children.findIndex(
       x => x.id === sourceId
     );
     const sourceNode = sourceParentNode.children[sourceIndex];
+    nodes = getAllId(sourceNode);
     const containerNode = getNodeById(draft, containerId);
     // 【条件分支节点】只能移动或复制到【判断节点】
     if (sourceNode.type === "case" && containerNode.type !== "switch") {
@@ -144,8 +162,12 @@ export function getNewFlowByMove({
     sourceParentNode.children.splice(sourceIndex, 1);
     containerNode.children.splice(newIndex, 0, sourceNode);
   });
-  return newConfig;
+  return { flow, nodes };
 }
+/**
+ * 返回节点拷贝后的新的流程对象，以及拷贝的节点
+ * @param {*} param0
+ */
 export function getNewFlowAndCopyDetailByCopy({
   config,
   sourceId,
@@ -190,7 +212,7 @@ export function getNewNode(type, name, newIdFunc) {
   const newNode = {
     id,
   };
-  newNode.name = name;
+  newNode.name = `${name}${id}`;
   newNode.nodeType = type;
   if (type === "loop") {
     newNode.type = "loop";
@@ -205,26 +227,18 @@ export function getNewNode(type, name, newIdFunc) {
       {
         id: caseId1,
         type: "case",
-        name: "条件分支",
+        name: `条件分支${caseId1}`,
         children: [],
       },
       {
         id: caseId2,
         type: "case",
-        name: "条件分支",
+        name: `条件分支${caseId2}`,
         children: [],
       },
     ];
   }
   return newNode;
-}
-
-export function getNodeName(config, nodeId) {
-  const node = config.entity.flowNode[nodeId];
-  if (!node) {
-    return "未命名节点";
-  }
-  return node.name;
 }
 
 /**

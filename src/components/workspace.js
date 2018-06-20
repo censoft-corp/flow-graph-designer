@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { image } from "../constants";
-import message from "../models/local";
 import {
   getNewFlowAndCopyDetailByCopy,
   getNewFlowByAdd,
@@ -31,10 +30,7 @@ class Workspace extends React.Component {
       this.setState({
         currentNode: id,
       });
-      if (
-        this.props.onClickNode &&
-        typeof this.props.onClickNode === "function"
-      ) {
+      if (this.props.onClick && typeof this.props.onClick === "function") {
         this.props.onClick(id);
       }
     };
@@ -117,7 +113,7 @@ class Workspace extends React.Component {
         getNewIdFunc(this.state.data)
       );
       // 在流程配置中增加新建的节点
-      const data = getNewFlowByAdd({
+      const { flow, nodes } = getNewFlowByAdd({
         config: this.state.data,
         node,
         containerId,
@@ -125,44 +121,45 @@ class Workspace extends React.Component {
       });
       if (this.props.onChange && typeof this.props.onChange === "function") {
         this.props.onChange({
-          data,
+          data: flow,
           detail: {
             action: "add",
             position: { id: containerId, index: containerIndex },
-            node: node.id,
+            nodes,
           },
         });
       }
       this.handleClearState();
-      this.setState({ data });
+      this.setState({ data: flow });
       return;
     }
+    const { data: prevData } = this.state;
+    const sourceParentNode = getParentNodeById(prevData, sourceId);
+    const sourceIndex = sourceParentNode.children.findIndex(
+      x => x.id === sourceId
+    );
     if (containerId === "recycle") {
-      const data = getNewFlowByDel({
+      const { flow, nodes } = getNewFlowByDel({
         config: this.state.data,
         sourceId,
       });
       if (this.props.onChange && typeof this.props.onChange === "function") {
         this.props.onChange({
-          data,
+          data: flow,
           detail: {
             action: "del",
-            position: { id: sourceParentNode, index: sourceIndex },
-            node: sourceId,
+            position: { id: sourceParentNode.id, index: sourceIndex },
+            nodes,
           },
         });
       }
       this.handleClearState();
-      this.setState({ data });
+      this.setState({ data: flow });
       return;
     }
-    const { data: prevData } = this.state;
     const action =
       e.nativeEvent.ctrlKey || e.nativeEvent.metaKey ? "copy" : "move";
-    const sourceParentNode = getParentNodeById(prevData, sourceId);
-    const sourceIndex = sourceParentNode.children.findIndex(
-      x => x.id === sourceId
-    );
+
     if (action === "move") {
       // 如果新的位置和当前位置没有变化，取消行动
       if (
@@ -187,8 +184,8 @@ class Workspace extends React.Component {
             action: "copy",
             position: { id: sourceParentNode.id, index: sourceIndex },
             position2: { id: containerId, index: containerIndex },
-            node: copyDetail.map(x => x.from)[0],
-            node2: copyDetail.map(x => x.to)[0],
+            nodes: copyDetail.map(x => x.from),
+            nodes2: copyDetail.map(x => x.to),
           },
         });
       }
@@ -196,25 +193,29 @@ class Workspace extends React.Component {
       this.setState({ data });
       return;
     } else if (action === "move") {
-      const data = getNewFlowByMove({
+      const { flow, nodes } = getNewFlowByMove({
         config: prevData,
         sourceId,
         containerId,
         containerIndex,
       });
+      if (flow === prevData) {
+        this.handleClearState();
+        return;
+      }
       if (this.props.onChange && typeof this.props.onChange === "function") {
         this.props.onChange({
-          data,
+          data: flow,
           detail: {
             action: "move",
             position: { id: sourceParentNode.id, index: sourceIndex },
             position2: { id: containerId, index: containerIndex },
-            node: sourceId,
+            nodes,
           },
         });
       }
       this.handleClearState();
-      this.setState({ data });
+      this.setState({ data: flow });
       return;
     }
   }
@@ -263,7 +264,7 @@ class Workspace extends React.Component {
             <div>
               <img className="expand-icon" src={image.expand} />
               <img className="unexpand-icon" src={image.unexpand} />
-              <span style={{ verticalAlign: "top" }}>{message("loop")}</span>
+              <span style={{ verticalAlign: "top" }}>{node.name}</span>
             </div>
             <img src={image.loop} />
           </div>
@@ -294,7 +295,7 @@ class Workspace extends React.Component {
             <div>
               <img className="expand-icon" src={image.expand} />
               <img className="unexpand-icon" src={image.unexpand} />
-              <span style={{ verticalAlign: "top" }}>{message("switch")}</span>
+              <span style={{ verticalAlign: "top" }}>{node.name}</span>
             </div>
             <img src={image.switch} />
           </div>
@@ -325,7 +326,7 @@ class Workspace extends React.Component {
                     })}
                     onDrop={this.handleDrop}>
                     <div className="title">
-                      <div>{message("case")}</div>
+                      <div>{x.name}</div>
                       <img src={image.case} />
                     </div>
                     {this.renderLine({

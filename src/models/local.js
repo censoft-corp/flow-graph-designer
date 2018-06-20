@@ -7,9 +7,9 @@ const langs = {
     case: "case",
   },
   zh_CN: {
-    loop: "循环流程",
-    switch: "判断流程",
-    case: "条件分支",
+    loop: "循环",
+    switch: "判断",
+    case: "分支",
   },
 };
 
