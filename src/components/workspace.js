@@ -53,7 +53,7 @@ class Workspace extends React.Component {
       e.dataTransfer.setData("dragId", id);
       e.dataTransfer.setDragImage(e.target, 10, 10);
       e.stopPropagation();
-      const dragNode = getNodeById(this.state.flow, id);
+      const dragNode = getNodeById(this.state.data, id);
       const isDragCase = dragNode.type === "case";
       this.setState({
         dragId: id,
@@ -114,18 +114,18 @@ class Workspace extends React.Component {
       const node = getNewNode(
         sourceId,
         nodeName,
-        getNewIdFunc(this.state.flow)
+        getNewIdFunc(this.state.data)
       );
       // 在流程配置中增加新建的节点
-      const flow = getNewFlowByAdd({
-        config: this.state.flow,
+      const data = getNewFlowByAdd({
+        config: this.state.data,
         node,
         containerId,
         containerIndex,
       });
       if (this.props.onChange && typeof this.props.onChange === "function") {
         this.props.onChange({
-          flow,
+          data,
           detail: {
             action: "add",
             position: { id: containerId, index: containerIndex },
@@ -134,17 +134,17 @@ class Workspace extends React.Component {
         });
       }
       this.handleClearState();
-      this.setState({ flow });
+      this.setState({ data });
       return;
     }
     if (containerId === "recycle") {
-      const newFlow = getNewFlowByDel({
-        config: this.state.flow,
+      const newData = getNewFlowByDel({
+        config: this.state.data,
         sourceId,
       });
       if (this.props.onChange && typeof this.props.onChange === "function") {
         this.props.onChange({
-          flow: newFlow,
+          data: newData,
           detail: {
             action: "del",
             position: { id: sourceParentNode, index: sourceIndex },
@@ -155,10 +155,10 @@ class Workspace extends React.Component {
       this.handleClearState();
       return;
     }
-    const { flow } = this.props;
+    const { data } = this.props;
     const action =
       e.nativeEvent.ctrlKey || e.nativeEvent.metaKey ? "copy" : "move";
-    const sourceParentNode = getParentNodeById(flow, sourceId);
+    const sourceParentNode = getParentNodeById(data, sourceId);
     const sourceIndex = sourceParentNode.children.findIndex(
       x => x.id === sourceId
     );
@@ -173,15 +173,15 @@ class Workspace extends React.Component {
       }
     }
     if (action === "copy") {
-      const { newFlow, copyDetail } = getNewFlowAndCopyDetailByCopy({
-        config: flow,
+      const { newData, copyDetail } = getNewFlowAndCopyDetailByCopy({
+        config: data,
         sourceId,
         containerId,
         containerIndex,
       });
       if (this.props.onChange && typeof this.props.onChange === "function") {
         this.props.onChange({
-          flow: newFlow,
+          data: newData,
           detail: {
             action: "copy",
             position: { id: sourceParentNode.id, index: sourceIndex },
@@ -194,15 +194,15 @@ class Workspace extends React.Component {
       this.handleClearState();
       return;
     } else if (action === "move") {
-      const newFlow = getNewFlowByMove({
-        config: flow,
+      const newData = getNewFlowByMove({
+        config: data,
         sourceId,
         containerId,
         containerIndex,
       });
       if (this.props.onChange && typeof this.props.onChange === "function") {
         this.props.onChange({
-          flow: newFlow,
+          data: newData,
           detail: {
             action: "move",
             position: { id: sourceParentNode.id, index: sourceIndex },
@@ -376,20 +376,20 @@ class Workspace extends React.Component {
     );
   }
   static getDerivedStateFromProps(nextProps, prevState) {
-    // render 函数将根据 state 中的 flow 进行渲染
-    // state 中的 flow 除了会被 props 更新外，也会被用户的拖拽操作设置
-    const flowFromProps = JSON.stringify(nextProps.flow || {});
-    if (flowFromProps !== prevState.flowFromProps) {
-      // 如果 props 中的 flow 发生了变化，修改 state 中的 flow
+    // render 函数将根据 state 中的 data 进行渲染
+    // state 中的 data 除了会被 props 更新外，也会被用户的拖拽操作设置
+    const dataFromProps = JSON.stringify(nextProps.data || {});
+    if (dataFromProps !== prevState.dataFromProps) {
+      // 如果 props 中的 data 发生了变化，修改 state 中的 data
       return {
-        flowFromProps: JSON.stringify(nextProps.flow), // 记录每次从 props 获取到的 flow 对象
-        flow: nextProps.flow,
+        dataFromProps: JSON.stringify(nextProps.data), // 记录每次从 props 获取到的 data 对象
+        data: nextProps.data,
       };
     }
     return null;
   }
   render() {
-    if (!this.state.flow) {
+    if (!this.state.data) {
       return null;
     }
     return (
@@ -414,8 +414,8 @@ class Workspace extends React.Component {
               <img src={image.begin} />
             </div>
             {this.renderLine({ containerId: "root", containerIndex: 0 })}
-            {this.state.flow.children.map((x, index) => {
-              const hasArrow = index !== this.state.flow.children.length - 1;
+            {this.state.data.children.map((x, index) => {
+              const hasArrow = index !== this.state.data.children.length - 1;
 
               return [
                 this.renderNode(x),
@@ -438,7 +438,7 @@ class Workspace extends React.Component {
 }
 
 Workspace.propTypes = {
-  flow: PropTypes.shape({
+  data: PropTypes.shape({
     id: PropTypes.string,
     children: PropTypes.array,
   }),

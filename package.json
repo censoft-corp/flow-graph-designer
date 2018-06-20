@@ -1,6 +1,6 @@
 {
   "name": "flow-graph-designer",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "A eact component capable of flow graph designer.",
   "scripts": {
     "build:readme": "toctoc README.md -w",
@@ -13,7 +13,7 @@
     "lint": "eslint src test playground",
     "precommit": "lint-staged",
     "publish-to-gh-pages": "npm run build:playground && gh-pages --dist build/",
-    "publish-to-npm": "npm run build:readme && npm run dist && npm publish",
+    "publish-to-npm": "npm run dist && npm publish",
     "preversion": "npm run build:playground && npm run dist && npm run build:readme && npm run cs-check && npm run lint",
     "start": "node devServer.js",
     "tdd": "cross-env NODE_ENV=test mocha --compilers js:babel-register --watch --require ./test/setup-jsdom.js test/**/*_test.js",

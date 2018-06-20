@@ -2,7 +2,14 @@ import React from "react";
 import Workspace from "./workspace";
 import Toolbar from "./toolbar";
 
-export default ({ flow, style, workspaceStyle, onClick, onChange }) => (
+export default ({
+  template,
+  data,
+  style,
+  workspaceStyle,
+  onClick,
+  onChange,
+}) => (
   <div
     className="flower-designer-panel"
     id="flower-designer-panel"
@@ -14,9 +21,9 @@ export default ({ flow, style, workspaceStyle, onClick, onChange }) => (
       flexDirection: "row",
       position: "relative",
     }}>
-    <Toolbar />
+    <Toolbar template={template} />
     <Workspace
-      flow={flow}
+      data={data}
       style={workspaceStyle}
       onChange={onChange}
       onClick={onClick}

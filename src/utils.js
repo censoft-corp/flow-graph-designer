@@ -2,17 +2,8 @@ import produce from "immer";
 
 let lang = "en_US";
 
-let template;
 export function setLang(lg) {
   lang = lg;
-}
-
-export function setTemplate(tpl) {
-  template = tpl;
-}
-
-export function getTemplate() {
-  return template;
 }
 
 export function getLang() {

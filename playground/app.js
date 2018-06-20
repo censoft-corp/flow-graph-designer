@@ -169,7 +169,7 @@ const template = {
     },
   },
 };
-const Designer = getDesigner({ lang: "zh_CN", template });
+const Designer = getDesigner({ lang: "zh_CN" });
 
 function beautifyConfig(code) {
   return jsBeautify(code, {
@@ -182,16 +182,16 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      flow: { id: "root", children: [] },
+      data: { id: "root", children: [] },
     };
     this.onChange = this.onChange.bind(this);
   }
 
   // fire when flow has been changed.
-  onChange({ flow, detail }) {
-    console.log("you change the flow.", flow, detail);
+  onChange({ data, detail }) {
+    console.log("you change the flow.", data, detail);
     this.setState({
-      flow,
+      data,
     });
   }
   // fire when node has been clicked.
@@ -200,7 +200,7 @@ class App extends Component {
   }
 
   render() {
-    const flowStr = JSON.stringify(this.state.flow);
+    const flowStr = JSON.stringify(this.state.data);
     const flowText = beautifyConfig(flowStr);
     return (
       <div style={{ display: "flex", flexDirection: "row", height: "500px" }}>
@@ -223,7 +223,8 @@ class App extends Component {
             width: "50%",
           }}>
           <Designer
-            flow={this.state.flow}
+            template={template}
+            data={this.state.data}
             onChange={this.onChange}
             onClick={this.onClick}
           />

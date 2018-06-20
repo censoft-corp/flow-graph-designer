@@ -1,7 +1,6 @@
 import React from "react";
-import { getTemplate } from "../utils";
 import css from "./toolbar.less";
-
+import PropTypes from "prop-types";
 const DRAG_IMAGE_DOM_ID = "flow-icon-draged-image";
 class Toolbar extends React.Component {
   handleDragStart({ typeId, title }) {
@@ -36,7 +35,7 @@ class Toolbar extends React.Component {
     const {
       nodes,
       entities: { node: nodeEntity },
-    } = getTemplate();
+    } = this.props.template;
     return (
       <div className={`flow-icon-toolbar ${css.mainClass}`}>
         {nodes.filter(x => nodeEntity[x].props.showInToolbar === "Y").map(x => (
@@ -59,5 +58,9 @@ class Toolbar extends React.Component {
     );
   }
 }
+
+Toolbar.propsType = {
+  template: PropTypes.object,
+};
 
 export default Toolbar;
