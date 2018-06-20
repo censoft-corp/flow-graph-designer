@@ -1,10 +1,10 @@
 {
   "name": "flow-graph-designer",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A eact component capable of flow graph designer.",
   "scripts": {
     "build:readme": "toctoc README.md -w",
-    "build:lib": "rimraf lib && cross-env NODE_ENV=production babel -d lib/ src/",
+    "build:lib": "rimraf lib && cross-env NODE_ENV=production babel -d lib/ src/ && copy src\\components\\*.less lib\\components",
     "build:dist": "rimraf dist && cross-env NODE_ENV=production webpack --config webpack.config.dist.js --optimize-minimize",
     "build:playground": "rimraf build && cross-env NODE_ENV=production webpack --config webpack.config.prod.js --optimize-minimize && copy playground/index.prod.html build/index.html",
     "cs-check": "prettier -l $npm_package_prettierOptions '{playground,src,test}/**/*.js'",
