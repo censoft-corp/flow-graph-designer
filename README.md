@@ -1,6 +1,7 @@
 # flow-graph-designer
 A react component that make flow graph by drag & drop.
 
+![demo image](https://raw.githubusercontent.com/censoft-corp/flow-graph-designer/master/demo.png)
 ## useage
 
 **install:**
@@ -58,6 +59,8 @@ npm run start
 
 **watch demo**
 there is a playground site.The url is  http://localhost:8080/
+
+![playground image](https://raw.githubusercontent.com/censoft-corp/flow-graph-designer/master/playground.png)
 
 ## publish
 
