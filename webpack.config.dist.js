@@ -1,6 +1,6 @@
 var path = require("path");
 var webpack = require("webpack");
-
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 module.exports = {
   cache: true,
   context: __dirname + "/src",
@@ -8,11 +8,12 @@ module.exports = {
   output: {
     path: "./dist",
     publicPath: "/dist/",
-    filename: "react-jsonschema-form.js",
-    library: "JSONSchemaForm",
+    filename: "flow-graph-designer.js",
+    library: "FlowGraphDesigner",
     libraryTarget: "umd"
   },
   plugins: [
+    new ExtractTextPlugin("flow-graph-designer.css", { allChunks: true }),
     new webpack.DefinePlugin({
       "process.env": {
         NODE_ENV: JSON.stringify("production")
@@ -35,13 +36,12 @@ module.exports = {
         loaders: ["babel"],
       },
       {
+        test: /\.css$/,
+        loader: "style!css",
+      },
+      {
         test: /\.less$/,
-        loader: "style!css!less",
-        include: [
-          path.join(__dirname, "src"),
-          path.join(__dirname, "playground"),
-          path.join(__dirname, "node_modules"),
-        ],
+        loader: ExtractTextPlugin.extract("css-loader!less"),
       },
       {
         test: /\.json$/,
