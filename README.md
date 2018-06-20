@@ -26,3 +26,48 @@ React.render(
   />
 )
 ```
+
+## develop
+
+**clone**
+```
+git clone https://github.com/censoft-corp/flow-graph-designer.git
+```
+
+**init***
+```
+yarn
+```
+
+or 
+
+```
+npm install
+```
+
+**start***
+```
+yarn run start
+```
+
+or 
+
+```
+npm run start
+```
+
+**watch demo**
+there is a playground site.The url is  http://localhost:8080/
+
+## publish
+
+run once
+```
+npm login
+...
+```
+
+everytime:
+```
+npm run publish-to-npm
+```
