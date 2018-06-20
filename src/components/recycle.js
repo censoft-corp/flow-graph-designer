@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { image } from "../constants";
 import PropTypes from "prop-types";
-import css from "./recycle.less";
 
 export default class Overlay extends Component {
   constructor(props) {
@@ -14,14 +13,22 @@ export default class Overlay extends Component {
     onDrop: PropTypes.func,
   };
   render() {
+    const style = {
+      backgroundColor: "#f1f1f1",
+      border: "1px solid #e1e1e1",
+      padding: "4px",
+      position: "absolute",
+      left: "10px",
+      top: "10px",
+      visibility: this.props.visible ? "visible" : "hidden",
+    };
     return (
       <div
-        className={`recycle ${css.mainClass}`}
-        style={{ visibility: this.props.visible ? "visible" : "hidden" }}
+        style={style}
         onDragOver={this.props.onDragOver}
         onDragLeave={this.props.onDragLeave}
         onDrop={this.props.onDrop}>
-        <img src={image.recycle} />
+        <img src={image.recycle} style={{ height: "48px", width: "48px" }} />
       </div>
     );
   }
