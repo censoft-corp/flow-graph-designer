@@ -1,9 +1,9 @@
 import Designer from "./components/designer";
-import { setLang, setSchema } from "./utils";
-export default function({ lang = "zh_CN", schema }) {
+import { setLang, setTemplate } from "./utils";
+export default function({ lang = "zh_CN", template }) {
   setLang(lang);
-  if (schema) {
-    setSchema(schema);
+  if (template) {
+    setTemplate(template);
   }
   return Designer;
 }

@@ -99,7 +99,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mozilla-services/react-jsonschema-form.git"
+    "url": "git+https://github.com/censoft-corp/flow-graph-designer.git"
   },
   "author": "Li Sheng Liang <lishengliang@censoft.com.cn>",
   "keywords": [

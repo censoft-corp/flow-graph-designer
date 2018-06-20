@@ -1,5 +1,5 @@
 import React from "react";
-import { getSchema } from "../utils";
+import { getTemplate } from "../utils";
 import css from "./toolbar.less";
 
 const DRAG_IMAGE_DOM_ID = "flow-icon-draged-image";
@@ -36,27 +36,25 @@ class Toolbar extends React.Component {
     const {
       nodes,
       entities: { node: nodeEntity },
-    } = getSchema();
+    } = getTemplate();
     return (
       <div className={`flow-icon-toolbar ${css.mainClass}`}>
-        {nodes
-          .filter(x => nodeEntity[x].basePropsData.showInToolbar === "Y")
-          .map(x => (
-            <div
-              className="icon-wrap"
-              key={x}
-              title={nodeEntity[x].basePropsData.title}
-              draggable="true"
-              onDragStart={this.handleDragStart({
-                typeId: nodeEntity[x].basePropsData.typeId,
-                title: nodeEntity[x].basePropsData.title,
-              })}
-              onDragEnd={this.handleDragEnd}>
-              <div className="icon">
-                <img src={nodeEntity[x].icon} alt="" />
-              </div>
+        {nodes.filter(x => nodeEntity[x].props.showInToolbar === "Y").map(x => (
+          <div
+            className="icon-wrap"
+            key={x}
+            title={nodeEntity[x].props.title}
+            draggable="true"
+            onDragStart={this.handleDragStart({
+              typeId: nodeEntity[x].props.typeId,
+              title: nodeEntity[x].props.title,
+            })}
+            onDragEnd={this.handleDragEnd}>
+            <div className="icon">
+              <img src={nodeEntity[x].icon} alt="" />
             </div>
-          ))}
+          </div>
+        ))}
       </div>
     );
   }
