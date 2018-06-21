@@ -222,7 +222,7 @@ class App extends Component {
     const flowStr = JSON.stringify(this.state.data);
     const flowText = beautifyConfig(flowStr);
     return (
-      <div style={{ display: "flex", flexDirection: "row", height: "500px" }}>
+      <div style={{ display: "flex", flexDirection: "row", height: "300px" }}>
         <div
           style={{
             flexGrow: 0,
@@ -235,6 +235,7 @@ class App extends Component {
             data={this.state.data}
             onChange={this.onChange}
             onClick={this.onClick}
+            iconWritingMode="horizontal-tb"
           />
         </div>
         <div

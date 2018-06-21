@@ -32,13 +32,17 @@ class Toolbar extends React.Component {
     }
   }
   render() {
+    const { width, iconWritingMode } = this.props;
     const {
       nodes,
       entities: { node: nodeEntity },
     } = this.props.template;
+    const tools = nodes.filter(x => nodeEntity[x].props.showInToolbar === "Y");
     return (
-      <div className={`flow-icon-toolbar ${css.mainClass}`}>
-        {nodes.filter(x => nodeEntity[x].props.showInToolbar === "Y").map(x => (
+      <div
+        className={`flow-icon-toolbar ${css.mainClass}`}
+        style={{ width: `${width}px`, writingMode: iconWritingMode }}>
+        {tools.map(x => (
           <div
             className="icon-wrap"
             key={x}

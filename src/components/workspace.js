@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { image } from "../constants";
 import {
-  getNewFlowAndCopyDetailByCopy,
+  getNewFlowByCopy,
   getNewFlowByAdd,
   getNewFlowByDel,
   getNewFlowByMove,
@@ -171,7 +171,7 @@ class Workspace extends React.Component {
       }
     }
     if (action === "copy") {
-      const { data, copyDetail } = getNewFlowAndCopyDetailByCopy({
+      const { data, copyDetail } = getNewFlowByCopy({
         config: prevData,
         sourceId,
         containerId,

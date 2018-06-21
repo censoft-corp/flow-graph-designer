@@ -168,7 +168,7 @@ export function getNewFlowByMove({
  * 返回节点拷贝后的新的流程对象，以及拷贝的节点
  * @param {*} param0
  */
-export function getNewFlowAndCopyDetailByCopy({
+export function getNewFlowByCopy({
   config,
   sourceId,
   containerId,
