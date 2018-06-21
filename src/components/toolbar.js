@@ -5,7 +5,8 @@ const DRAG_IMAGE_DOM_ID = "flow-icon-draged-image";
 class Toolbar extends React.Component {
   handleDragStart({ type, action, name }) {
     return e => {
-      e.dataTransfer.setData("dragId", action);
+      e.dataTransfer.setData("type", type);
+      e.dataTransfer.setData("action", action);
       e.dataTransfer.setData("nodeName", name);
       e.dataTransfer.setData("method", "new");
       const dragImage = e.target.cloneNode();
@@ -49,6 +50,7 @@ class Toolbar extends React.Component {
             title={nodeEntity[x].props.name}
             draggable="true"
             onDragStart={this.handleDragStart({
+              type: nodeEntity[x].type,
               action: nodeEntity[x].props.action,
               name: nodeEntity[x].props.name,
             })}

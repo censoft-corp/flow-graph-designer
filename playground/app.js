@@ -191,7 +191,6 @@ class App extends Component {
 
   // fire when flow has been changed.
   onChange({ data, detail }) {
-    console.log("you change the flow.", data, detail);
     const actions = process(this.state.actions, draft => {
       draft.splice(0, 0, {
         index: draft.length + 1,

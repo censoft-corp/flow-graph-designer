@@ -205,7 +205,7 @@ export function getNewFlowByCopy({
   };
 }
 
-export function getNewNode(type, name, newIdFunc) {
+export function getNewNode(type, action, name, newIdFunc) {
   const newIds = [];
   const id = newIdFunc(newIds);
   newIds.push(id);
@@ -213,7 +213,8 @@ export function getNewNode(type, name, newIdFunc) {
     id,
   };
   newNode.name = `${name}${id}`;
-  newNode.action = type;
+  newNode.type = type;
+  newNode.action = action;
   if (type === "loop") {
     newNode.type = "loop";
     newNode.children = [];
@@ -239,8 +240,6 @@ export function getNewNode(type, name, newIdFunc) {
         children: [],
       },
     ];
-  } else {
-    newNode.type = "normal";
   }
   return newNode;
 }

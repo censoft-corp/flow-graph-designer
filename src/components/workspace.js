@@ -107,8 +107,11 @@ class Workspace extends React.Component {
     }
     // 创建新的节点
     if (method === "new") {
+      const type = e.dataTransfer.getData("type");
+      const action = e.dataTransfer.getData("action");
       const node = getNewNode(
-        sourceId,
+        type,
+        action,
         nodeName,
         getNewIdFunc(this.state.data)
       );
