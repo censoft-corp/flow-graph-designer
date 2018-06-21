@@ -17,7 +17,7 @@ import React from 'react';
 import getFlowDesignerComponent from 'flow-graph-designer'
 const FlowDesignerComponent = getFlowDesignerComponent({lang: 'zh_CN'});
 
-const template={...}    // should show the structor a few days later :)
+const template={...}  
 ...
 React.render(
   document.getElementById('app'),
@@ -28,6 +28,65 @@ React.render(
 )
 ```
 
+**props**
+
+template:
+
+```
+const template = {
+  id: "default",
+  nodes: [
+    "open",
+    "click",
+    "data",
+    "input",
+    "verification",
+    "dropdown",
+    "loop",
+    "switch",
+    "mouse-enter",
+    "stop-loop",
+    "stop",
+    "case",
+  ],
+  entities: {
+    node: {
+      open: {
+        id: "open",
+        type: "normal",
+        icon:
+          "data:image/png;base64...U5ErkJggg==",    // src of icon on iconbar, could be base64 image or image url.
+        props: {
+          action: "open-page",
+          name: "打开网页",
+          type: "normal",
+          showInToolbar: "Y",   // should show in toolbar
+        },
+      },
+      ...
+    }
+  }
+}
+```
+
+data:
+
+```
+{
+  id: 'root',
+  type: 'normal',
+  action: 'root',
+  name: '根节点'
+  children: [
+    id: '001',
+    type: 'normal',     // control flow, value is one of : normal, loop, switch, case, stop-loop, stop
+    action: 'open',     // for specifying the meaning of the node.
+    children: [
+      ...
+    ]
+  ]
+}
+```
 ## develop
 
 **clone**
