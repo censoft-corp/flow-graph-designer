@@ -3,13 +3,13 @@ import css from "./toolbar.less";
 import PropTypes from "prop-types";
 const DRAG_IMAGE_DOM_ID = "flow-icon-draged-image";
 class Toolbar extends React.Component {
-  handleDragStart({ typeId, title }) {
+  handleDragStart({ type, action, name }) {
     return e => {
-      e.dataTransfer.setData("dragId", typeId);
-      e.dataTransfer.setData("nodeName", title);
+      e.dataTransfer.setData("dragId", action);
+      e.dataTransfer.setData("nodeName", name);
       e.dataTransfer.setData("method", "new");
       const dragImage = e.target.cloneNode();
-      dragImage.innerHTML = title;
+      dragImage.innerHTML = name;
       dragImage.style.width = "150px";
       dragImage.style.height = "23px";
       dragImage.style.display = "block";
@@ -46,11 +46,11 @@ class Toolbar extends React.Component {
           <div
             className="icon-wrap"
             key={x}
-            title={nodeEntity[x].props.title}
+            title={nodeEntity[x].props.name}
             draggable="true"
             onDragStart={this.handleDragStart({
-              typeId: nodeEntity[x].props.typeId,
-              title: nodeEntity[x].props.title,
+              action: nodeEntity[x].props.action,
+              name: nodeEntity[x].props.name,
             })}
             onDragEnd={this.handleDragEnd}>
             <div className="icon">

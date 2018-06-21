@@ -213,7 +213,7 @@ export function getNewNode(type, name, newIdFunc) {
     id,
   };
   newNode.name = `${name}${id}`;
-  newNode.nodeType = type;
+  newNode.action = type;
   if (type === "loop") {
     newNode.type = "loop";
     newNode.children = [];
@@ -227,16 +227,20 @@ export function getNewNode(type, name, newIdFunc) {
       {
         id: caseId1,
         type: "case",
+        action: "case",
         name: `条件分支${caseId1}`,
         children: [],
       },
       {
         id: caseId2,
         type: "case",
+        action: "case",
         name: `条件分支${caseId2}`,
         children: [],
       },
     ];
+  } else {
+    newNode.type = "normal";
   }
   return newNode;
 }
