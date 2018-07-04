@@ -1,7 +1,7 @@
 {
   "name": "flow-graph-designer",
-  "version": "0.3.3",
-  "description": "A eact component capable of flow graph designer.",
+  "version": "0.3.4",
+  "description": "A React component capable of flow graph designer.",
   "scripts": {
     "build:readme": "toctoc README.md -w",
     "build:lib": "rimraf lib && cross-env NODE_ENV=production babel -d lib/ src/ && copy src\\components\\*.less lib\\components",

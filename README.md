@@ -124,7 +124,12 @@ there is a playground site.The url is  http://localhost:8080/
 
 ## publish
 
-run once
+set npm register server if necessary
+```
+npm config set registry https://registry.npmjs.org/
+```
+
+npm login, run once
 ```
 npm login
 ...

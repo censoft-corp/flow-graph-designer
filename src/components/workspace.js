@@ -2,8 +2,8 @@ import PropTypes from "prop-types";
 import React from "react";
 import { image } from "../constants";
 import {
-  getNewFlowByCopy,
   getNewFlowByAdd,
+  getNewFlowByCopy,
   getNewFlowByDel,
   getNewFlowByMove,
   getNewIdFunc,
@@ -391,6 +391,7 @@ class Workspace extends React.Component {
     if (!prevState.dataFromProps || dataFromProps !== prevState.dataFromProps) {
       // 如果 props 中的 data 发生了变化，修改 state 中的 data
       return {
+        _has_getDerivedStateFromProps_func: true,
         dataFromProps: JSON.stringify(nextProps.data), // 记录每次从 props 获取到的 data 对象
         data: nextProps.data,
       };
@@ -398,6 +399,12 @@ class Workspace extends React.Component {
     return null;
   }
   render() {
+    if (!this.state._has_getDerivedStateFromProps_func) {
+      console.error(
+        "Component flow-graph-designer need react with version 16.4 or above."
+      );
+      return null;
+    }
     if (!this.state.data) {
       return null;
     }

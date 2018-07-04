@@ -1,7 +1,7 @@
 import React from "react";
-import Workspace from "./workspace";
-import Toolbar from "./toolbar";
 import css from "./container.less";
+import Toolbar from "./toolbar";
+import Workspace from "./workspace";
 
 class Container extends React.Component {
   constructor(props) {

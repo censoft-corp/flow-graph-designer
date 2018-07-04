@@ -1,6 +1,6 @@
+import PropTypes from "prop-types";
 import React from "react";
 import css from "./toolbar.less";
-import PropTypes from "prop-types";
 const DRAG_IMAGE_DOM_ID = "flow-icon-draged-image";
 class Toolbar extends React.Component {
   handleDragStart({ type, action, name }) {

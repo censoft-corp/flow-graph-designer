@@ -212,7 +212,7 @@ export function getNewNode(type, action, name, newIdFunc) {
   const newNode = {
     id,
   };
-  newNode.name = `${name}${id}`;
+  newNode.name = name;
   newNode.type = type;
   newNode.action = action;
   if (type === "loop") {
