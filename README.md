@@ -139,3 +139,8 @@ everytime:
 ```
 npm run publish-to-npm
 ```
+
+restore npm register server to tapbao image if you wish
+```
+npm config set registry https://registry.npm.taobao.org
+```
