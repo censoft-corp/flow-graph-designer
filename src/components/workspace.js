@@ -385,15 +385,26 @@ class Workspace extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     // render 函数将根据 state 中的 data 进行渲染
     // state 中的 data 除了会被 props 更新外，也会被用户的拖拽操作设置
-    const dataFromProps = JSON.stringify(
-      nextProps.data || { id: "root", children: [] }
-    );
+
+    const data = (_data => {
+      if (!_data) {
+        return { id: "root", children: [] };
+      }
+      if (!_data.children) {
+        _data.children = [];
+      }
+      return {
+        ..._data,
+        children: [],
+      };
+    })(nextProps.data);
+    const dataFromProps = JSON.stringify(data);
     if (!prevState.dataFromProps || dataFromProps !== prevState.dataFromProps) {
       // 如果 props 中的 data 发生了变化，修改 state 中的 data
       return {
         _has_getDerivedStateFromProps_func: true,
-        dataFromProps: JSON.stringify(nextProps.data), // 记录每次从 props 获取到的 data 对象
-        data: nextProps.data,
+        dataFromProps, // 记录每次从 props 获取到的 data 对象
+        data: data,
       };
     }
     return null;

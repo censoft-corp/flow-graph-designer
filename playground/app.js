@@ -218,7 +218,7 @@ class App extends Component {
 
   render() {
     const tableStyle = { border: "1px solid lightblue", textAlign: "center" };
-    const flowStr = JSON.stringify(this.state.data);
+    const flowStr = JSON.stringify(this.state.data || {});
     const flowText = beautifyConfig(flowStr);
     return (
       <div style={{ display: "flex", flexDirection: "row", height: "300px" }}>
