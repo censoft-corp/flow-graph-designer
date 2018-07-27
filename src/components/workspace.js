@@ -391,12 +391,12 @@ class Workspace extends React.Component {
         return { id: "root", children: [] };
       }
       if (!_data.children) {
-        _data.children = [];
+        return {
+          ..._data,
+          children: [],
+        };
       }
-      return {
-        ..._data,
-        children: [],
-      };
+      return _data;
     })(nextProps.data);
     const dataFromProps = JSON.stringify(data);
     if (!prevState.dataFromProps || dataFromProps !== prevState.dataFromProps) {
