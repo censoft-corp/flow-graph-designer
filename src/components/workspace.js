@@ -419,6 +419,7 @@ class Workspace extends React.Component {
     if (!this.state.data) {
       return null;
     }
+    const theme = this.props.theme || "theme-1";
     return (
       <div
         className={`flow-designer-workspace-wrap ${css.mainClass}`}
@@ -435,7 +436,7 @@ class Workspace extends React.Component {
           })}
           onDrop={this.handleDrop}
         />
-        <div className={`main ${this.props.theme}`}>
+        <div className={`main ${theme}`}>
           <div className="flow-body root">
             <div className="node-begin">
               <img src={image.begin} />
