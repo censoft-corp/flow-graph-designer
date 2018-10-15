@@ -24,11 +24,16 @@ React.render(
   <FlowDesignerComponent
     data={{id: 'root', children: []}},
     template={template}
+    theme="theme-1"
   />
 )
 ```
 
 **props**
+
+theme:
+
+valid values from ```theme-1``` to ```theme-8```
 
 template:
 
