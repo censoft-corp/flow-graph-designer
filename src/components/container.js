@@ -29,6 +29,7 @@ class Container extends React.Component {
       onClick,
       onChange,
       iconWritingMode,
+      theme,
     } = this.props;
     const renderToolbar = (iconSize = 34, toolbarPadding = 2) => {
       if (!this.state.height) {
@@ -67,6 +68,7 @@ class Container extends React.Component {
         <Workspace
           data={data}
           style={workspaceStyle}
+          theme={theme}
           onChange={onChange}
           onClick={onClick}
         />

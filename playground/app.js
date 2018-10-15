@@ -184,9 +184,11 @@ class App extends Component {
     this.state = {
       data: { id: "root", children: [] },
       actions: [],
+      theme: "theme-1",
     };
     this.onChange = this.onChange.bind(this);
     this.onClick = this.onClick.bind(this);
+    this.onChangeTheme = this.onChangeTheme.bind(this);
   }
 
   // fire when flow has been changed.
@@ -216,80 +218,110 @@ class App extends Component {
     });
   }
 
+  onChangeTheme(e) {
+    this.setState({
+      theme: e.target.value,
+    });
+  }
   render() {
     const tableStyle = { border: "1px solid lightblue", textAlign: "center" };
     const flowStr = JSON.stringify(this.state.data || {});
     const flowText = beautifyConfig(flowStr);
     return (
-      <div style={{ display: "flex", flexDirection: "row", height: "300px" }}>
-        <div
-          style={{
-            flexGrow: 0,
-            border: "1px solid red",
-            margin: "10px",
-            width: "30%",
-          }}>
-          <Designer
-            template={template}
-            data={this.state.data}
-            onChange={this.onChange}
-            onClick={this.onClick}
-            iconWritingMode="horizontal-tb"
-          />
+      <div>
+        <div>
+          <h3 style={{ margin: "10px", display: "inline-block" }}>
+            flow graph designer
+          </h3>
+          <select onChange={this.onChangeTheme} value={this.state.theme}>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map(v => {
+              return (
+                <option value={`theme-${v}`} key={v}>
+                  主题{v}
+                </option>
+              );
+            })}
+          </select>
         </div>
-        <div
-          style={{
-            flexGrow: 0,
-            border: "1px solid red",
-            margin: "10px",
-            padding: "1px",
-            overflow: "auto",
-            width: "30%",
-          }}>
-          输出流程对象：
-          <pre>{flowText}</pre>
-        </div>
-        <div
-          style={{
-            flexGrow: 0,
-            border: "1px solid red",
-            margin: "10px",
-            padding: "1px",
-            overflow: "auto",
-            width: "30%",
-          }}>
-          操作历史记录：
-          <table style={{ ...tableStyle, width: "100%" }}>
-            <thead>
-              <tr style={tableStyle}>
-                <th style={tableStyle}>序号</th>
-                <th style={tableStyle}>动作</th>
-                <th style={tableStyle}>位置</th>
-                <th style={tableStyle}>节点</th>
-                <th style={tableStyle}>位置2</th>
-                <th style={tableStyle}>节点2</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.actions.map(x => (
-                <tr style={tableStyle} key={x.index}>
-                  <td style={tableStyle}>{x.index}</td>
-                  <td style={tableStyle}>{x.action}</td>
-                  <td style={tableStyle}>
-                    {x.position ? `${x.position.id}[${x.position.index}]` : ""}
-                  </td>
-                  <td style={tableStyle}>{(x.nodes || []).join(",")}</td>
-                  <td style={tableStyle}>
-                    {x.position2
-                      ? `${x.position2.id}[${x.position2.index}]`
-                      : ""}
-                  </td>
-                  <td style={tableStyle}>{(x.nodes2 || []).join(",")}</td>
+        <div style={{ display: "flex", flexDirection: "row", height: "800px" }}>
+          <div
+            style={{
+              flexGrow: 0,
+              border: "1px solid red",
+              margin: "10px",
+              width: "30%",
+            }}>
+            <Designer
+              template={template}
+              data={this.state.data}
+              theme={this.state.theme}
+              onChange={this.onChange}
+              onClick={this.onClick}
+              iconWritingMode="horizontal-tb"
+            />
+          </div>
+          <div
+            style={{
+              flexGrow: 0,
+              border: "1px solid red",
+              margin: "10px",
+              padding: "1px",
+              overflow: "auto",
+              width: "30%",
+            }}>
+            输出流程对象：
+            <pre>{flowText}</pre>
+          </div>
+          <div
+            style={{
+              flexGrow: 0,
+              border: "1px solid red",
+              margin: "10px",
+              padding: "1px",
+              overflow: "auto",
+              width: "30%",
+            }}>
+            操作历史记录：
+            <table style={{ ...tableStyle, width: "100%" }}>
+              <thead>
+                <tr style={tableStyle}>
+                  <th style={tableStyle}>序号</th>
+                  <th style={tableStyle}>动作</th>
+                  <th style={tableStyle}>位置</th>
+                  <th style={tableStyle}>节点</th>
+                  <th style={tableStyle}>位置2</th>
+                  <th style={tableStyle}>节点2</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {this.state.actions.map(x => (
+                  <tr style={tableStyle} key={x.index}>
+                    <td style={tableStyle}>{x.index}</td>
+                    <td style={tableStyle}>{x.action}</td>
+                    <td style={tableStyle}>
+                      {x.position
+                        ? `${x.position.id}[${x.position.index}]`
+                        : ""}
+                    </td>
+                    <td style={tableStyle}>{(x.nodes || []).join(",")}</td>
+                    <td style={tableStyle}>
+                      {x.position2
+                        ? `${x.position2.id}[${x.position2.index}]`
+                        : ""}
+                    </td>
+                    <td style={tableStyle}>{(x.nodes2 || []).join(",")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
+        <p style={{ textAlign: "center" }}>
+          Powered by
+          <a href="https://github.com/censoft-corp/flow-graph-designer">
+            flow-graph-designer
+          </a>.
+        </p>
       </div>
     );
   }

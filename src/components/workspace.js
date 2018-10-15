@@ -435,7 +435,7 @@ class Workspace extends React.Component {
           })}
           onDrop={this.handleDrop}
         />
-        <div className="main">
+        <div className={`main ${this.props.theme}`}>
           <div className="flow-body root">
             <div className="node-begin">
               <img src={image.begin} />
@@ -469,6 +469,7 @@ Workspace.propTypes = {
     id: PropTypes.string,
     children: PropTypes.array,
   }),
+  theme: PropTypes.string,
   style: PropTypes.object,
   onClick: PropTypes.func,
   onChange: PropTypes.func,
