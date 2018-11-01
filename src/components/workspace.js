@@ -424,7 +424,8 @@ class Workspace extends React.Component {
     return (
       <div
         className={`flow-designer-workspace-wrap ${css.mainClass}`}
-        style={this.props.style || {}}>
+        style={this.props.style || {}}
+        onClick={this.handleClearState}>
         {window.recycleWrap &&
           createPortal(
             <Recycle
