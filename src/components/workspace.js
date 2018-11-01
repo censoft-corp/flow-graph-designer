@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import React from "react";
+import { createPortal } from "react-dom";
 import { image } from "../constants";
 import {
   getNewFlowByAdd,
@@ -424,18 +425,22 @@ class Workspace extends React.Component {
       <div
         className={`flow-designer-workspace-wrap ${css.mainClass}`}
         style={this.props.style || {}}>
-        <Recycle
-          visible={!!this.state.dragId}
-          onDragOver={this.handleDragOver({
-            containerId: "recycle",
-            containerIndex: null,
-          })}
-          onDragLeave={this.handleDragLeave({
-            containerId: "recycle",
-            containerIndex: null,
-          })}
-          onDrop={this.handleDrop}
-        />
+        {window.recycleWrap &&
+          createPortal(
+            <Recycle
+              visible={!!this.state.dragId}
+              onDragOver={this.handleDragOver({
+                containerId: "recycle",
+                containerIndex: null,
+              })}
+              onDragLeave={this.handleDragLeave({
+                containerId: "recycle",
+                containerIndex: null,
+              })}
+              onDrop={this.handleDrop}
+            />,
+            window.recycleWrap
+          )}
         <div className={`main ${theme}`}>
           <div className="flow-body root">
             <div className="node-begin">

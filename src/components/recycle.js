@@ -17,9 +17,6 @@ export default class Overlay extends Component {
       backgroundColor: "#f1f1f1",
       border: "1px solid #e1e1e1",
       padding: "4px",
-      position: "absolute",
-      left: "10px",
-      top: "10px",
       visibility: this.props.visible ? "visible" : "hidden",
     };
     return (

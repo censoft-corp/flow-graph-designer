@@ -71,6 +71,11 @@ class Container extends React.Component {
           theme={theme}
           onChange={onChange}
           onClick={onClick}
+          recycleWrap={this.state.recycleWrapRef}
+        />
+        <div
+          ref={ref => (window.recycleWrap = ref)}
+          style={{ position: "absolute", left: "50px", top: "10px" }}
         />
       </div>
     );
