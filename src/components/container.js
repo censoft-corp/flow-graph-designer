@@ -75,7 +75,7 @@ class Container extends React.Component {
         />
         <div
           ref={ref => (window.recycleWrap = ref)}
-          style={{ position: "absolute", left: "50px", top: "10px" }}
+          style={{ position: "absolute", right: "20px", top: "10px" }}
         />
       </div>
     );
