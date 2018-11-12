@@ -80,7 +80,7 @@
       &.main {
         flex-grow: 1;
         display: table;
-        padding: 10px;
+        padding: 20px;
         color: @font-color;
         img {
           width: 24px;
@@ -114,16 +114,20 @@
           min-width: @node-width;
           &.normal {
             color: @font-color-light;
-            border: 1px solid darkblue;
+            border: 0;
+            border-radius: 15px;
             background-color: @base-color;
             font-size: 14px;
             width: @node-width;
-            padding: 4px;
+            margin: 3px 0;
+            padding: 3px;
+            color: white;
+            box-shadow: 0 0 0 2px white, 0 0 0 3px #8eccbb;
             &.draged {
               background-color: @draged-color;
             }
             &.clicked {
-              outline-offset: 4px;
+              outline-offset: 8px;
               outline: 1px dashed @strong-color;
             }
           }
@@ -207,7 +211,7 @@
                   outline: 1px dashed @strong-color; // box-shadow: 4px 4px 2px #888888;
                 }
                 >.title {
-                  height: @node-height + @icon-height;
+                  height: @node-height + 10px;
                   background-size: @icon-height;
                   background-position: 50% @node-height;
                   background-repeat: no-repeat;
@@ -238,10 +242,11 @@
               outline: 1px dashed @strong-color; // box-shadow: 4px 4px 2px #888888;
             }
             >.title {
-              height: @node-height + @icon-height;
+              height: @node-height;
               background-size: @icon-height;
               background-position: 50% @node-height;
               background-repeat: no-repeat;
+              line-height: @node-height;
               img.expand-icon {
                 display: none;
                 margin-right: 6px;
@@ -285,10 +290,11 @@
               outline: 1px dashed @strong-color; // box-shadow: 4px 4px 2px #888888;
             }
             >.title {
-              height: @node-height + @icon-height;
+              height: @node-height;
               background-size: @icon-height;
               background-position: 50% @node-height;
               background-repeat: no-repeat;
+              line-height: @node-height;
               img.expand-icon {
                 display: none;
                 margin-right: 6px;
@@ -379,14 +385,14 @@
         }
         .node-begin,
         .node-end {
-          height: @node-height;
+          height: 32px;
           width: 100px;
           display: flex;
           align-items: center;
           flex-direction: column-reverse;
           .img {
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             background-size: contain;
           }
         }

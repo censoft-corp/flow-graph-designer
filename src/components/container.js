@@ -72,6 +72,7 @@ class Container extends React.Component {
           onChange={onChange}
           onClick={onClick}
           recycleWrap={this.state.recycleWrapRef}
+          template={template}
         />
         <div
           ref={ref => (window.recycleWrap = ref)}

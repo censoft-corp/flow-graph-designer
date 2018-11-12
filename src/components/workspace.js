@@ -11,6 +11,7 @@ import {
   getNewNode,
   getNodeById,
   getParentNodeById,
+  getColorByNode,
 } from "../utils";
 import Recycle from "./recycle";
 import css from "./workspace.less";
@@ -23,6 +24,7 @@ class Workspace extends React.Component {
     this.handleDragOver = this.handleDragOver.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.renderLine = this.renderLine.bind(this);
+    this.renderNode = this.renderNode.bind(this);
     this.handleClearState = this.handleClearState.bind(this);
   }
   handleClick(id) {
@@ -252,6 +254,7 @@ class Workspace extends React.Component {
       </div>
     );
   }
+
   renderNode(node) {
     const unexpandState = this.state[`${UNEXPAND_STATE_ID_PREFIX}${node.id}`];
     if (node.type === "loop") {
@@ -269,8 +272,16 @@ class Workspace extends React.Component {
               <img className="expand-icon" src={image.expand} />
               <img className="unexpand-icon" src={image.unexpand} />
               <span style={{ verticalAlign: "top" }}>{node.name}</span>
+              <img
+                src={image.loop}
+                style={{
+                  width: "18px",
+                  height: "18px",
+                  marginLeft: "4px",
+                  marginTop: "2px",
+                }}
+              />
             </div>
-            <img src={image.loop} />
           </div>
           {this.renderLine({ containerId: node.id, containerIndex: 0 })}
           <div className="flow-body">
@@ -300,13 +311,21 @@ class Workspace extends React.Component {
               <img className="expand-icon" src={image.expand} />
               <img className="unexpand-icon" src={image.unexpand} />
               <span style={{ verticalAlign: "top" }}>{node.name}</span>
+              <img
+                src={image.switch}
+                style={{
+                  width: "18px",
+                  height: "18px",
+                  marginLeft: "4px",
+                  marginTop: "3px",
+                }}
+              />
             </div>
-            <img src={image.switch} />
           </div>
           {this.renderHalfHeightLine()}
           <div className="switch-body">
             {node.children.map((x, index) => [
-              <div className="flow-node case" key={`flow-node-${x.id}`}>
+              <div className={`flow-node case`} key={`flow-node-${x.id}`}>
                 <div className="flow-node-line-up">
                   <div className="line left-div" />
                   <div className="line right-div" />
@@ -331,7 +350,10 @@ class Workspace extends React.Component {
                     onDrop={this.handleDrop}>
                     <div className="title">
                       <div>{x.name}</div>
-                      <img src={image.case} />
+                      <img
+                        src={image.case}
+                        style={{ width: "18px", height: "18px" }}
+                      />
                     </div>
                     {this.renderLine({
                       containerId: x.id,
@@ -370,12 +392,17 @@ class Workspace extends React.Component {
         </div>
       );
     }
+    const color = getColorByNode(node, this.props.template);
     return (
       <div
         key={node.id}
         className={`flow-node normal ${
           this.state.dragId === node.id ? "draged" : ""
         } ${this.state.currentNode === node.id ? "clicked" : ""}`}
+        style={{
+          backgroundColor: color,
+          boxShadow: `0 0 0 2px white, 0 0 0 3px ${color}`,
+        }}
         onClick={this.handleClick(node.id)}
         draggable="true"
         onDragStart={this.handleDragStart(node.id)}>
@@ -445,7 +472,10 @@ class Workspace extends React.Component {
         <div className={`main ${theme}`}>
           <div className="flow-body root">
             <div className="node-begin">
-              <img src={image.begin} />
+              <img
+                src={image.begin}
+                style={{ width: "32px", height: "32px" }}
+              />
             </div>
             {this.renderLine({ containerId: "root", containerIndex: 0 })}
             {this.state.data.children.map((x, index) => {
@@ -461,8 +491,7 @@ class Workspace extends React.Component {
               ];
             })}
             <div className="node-end">
-              <div className="img" title="结束" />
-              <img src={image.end} />
+              <img src={image.end} style={{ width: "32px", height: "32px" }} />
             </div>
           </div>
         </div>
@@ -476,6 +505,7 @@ Workspace.propTypes = {
     id: PropTypes.string,
     children: PropTypes.array,
   }),
+  template: PropTypes.object,
   theme: PropTypes.string,
   style: PropTypes.object,
   onClick: PropTypes.func,

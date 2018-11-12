@@ -1,5 +1,5 @@
 import produce from "immer";
-
+import { colors, defaultColor } from "./style";
 let lang = "en_US";
 
 export function setLang(lg) {
@@ -82,6 +82,24 @@ export function getNewFlowByAdd({ config, node, containerId, containerIndex }) {
   return { flow, nodes };
 }
 
+// 返回节点的颜色
+export function getColorByNode(node, template) {
+  let color = defaultColor;
+  if (node.color) {
+    color = node.color;
+  } else {
+    const templateNodeId = template.nodes.find(
+      x => template.entities.node[x].props.action === node.action
+    );
+    if (templateNodeId) {
+      color = template.entities.node[templateNodeId].color || defaultColor;
+    }
+  }
+  return (
+    colors.find(x => x.name === color) ||
+    colors.find(x => x.name === defaultColor)
+  ).value;
+}
 // 返回包含节点及其子节点的所有ID的数组
 export function getAllId(node) {
   const ids = [];
