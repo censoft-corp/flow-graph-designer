@@ -1,9 +1,8 @@
 import Designer from "./components/container";
-import { setLang, setTemplate } from "./utils";
-export default function({ lang = "zh_CN", template }) {
+import { setLang } from "./utils";
+export default function({ lang = "zh_CN" }) {
   setLang(lang);
-  if (template) {
-    setTemplate(template);
-  }
   return Designer;
 }
+
+export { colors } from "./style";
