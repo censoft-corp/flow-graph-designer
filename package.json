@@ -1,6 +1,6 @@
 {
   "name": "flow-graph-designer",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A React component capable of flow graph designer.",
   "scripts": {
     "build:readme": "toctoc README.md -w",
