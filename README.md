@@ -10,7 +10,7 @@ A react component that make flow graph by drag & drop.
 - undo/redo support
 - action detail info
 
-![demo image](https://raw.githubusercontent.com/censoft-corp/flow-graph-designer/master/demo.png)
+![demo image](https://raw.githubusercontent.com/censoft-corp/flow-graph-designer/master/demo.png?time=20181213)
 ## useage
 
 **install:**
