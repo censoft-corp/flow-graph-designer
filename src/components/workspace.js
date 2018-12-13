@@ -5,6 +5,7 @@ import { image } from "../constants";
 import {
   getNewFlowByAdd,
   getNewFlowByCopy,
+  getNewFlowByPaste,
   getNewFlowByDel,
   getNewFlowByMove,
   getNewIdFunc,
@@ -15,7 +16,7 @@ import {
 } from "../utils";
 import Recycle from "./recycle";
 import css from "./workspace.less";
-
+import { History } from "stateshot";
 const UNEXPAND_STATE_ID_PREFIX = "unexpand-state-id-";
 class Workspace extends React.Component {
   constructor(props) {
@@ -25,13 +26,190 @@ class Workspace extends React.Component {
     this.handleDrop = this.handleDrop.bind(this);
     this.renderLine = this.renderLine.bind(this);
     this.renderNode = this.renderNode.bind(this);
+    this.handlePaste = this.handlePaste.bind(this);
+    this.handleCopy = this.handleCopy.bind(this);
+    this.handleFocus = this.handleFocus.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleClearState = this.handleClearState.bind(this);
+    this.handleUpdateData = this.handleUpdateData.bind(this);
+    this.history = new History();
+  }
+  handleUpdateData(data) {
+    this.setState({ data });
+    this.history.pushSync(data);
+  }
+  handleKeyUp(event) {
+    if (event.key === "Delete") {
+      const { data, currentId } = this.state;
+      if (!currentId) {
+        return;
+      }
+      const sourceParentNode = getParentNodeById(data, currentId);
+      const sourceIndex = sourceParentNode.children.findIndex(
+        x => x.id === currentId
+      );
+      const { flow, nodes } = getNewFlowByDel({
+        config: data,
+        sourceId: currentId,
+      });
+      if (this.props.onChange && typeof this.props.onChange === "function") {
+        this.props.onChange({
+          data: flow,
+          detail: {
+            action: "del",
+            position: { id: sourceParentNode.id, index: sourceIndex },
+            nodes,
+          },
+        });
+      }
+      this.handleClearState();
+      this.setState({ currentId: null });
+      this.handleUpdateData(flow);
+      return;
+    }
+    if (event.ctrlKey) {
+      switch (event.key) {
+        case "z":
+          (() => {
+            const data = this.history.undo().get();
+            this.setState({ data });
+            if (
+              this.props.onChange &&
+              typeof this.props.onChange === "function"
+            ) {
+              this.props.onChange({
+                data,
+                detail: {
+                  action: "undo",
+                },
+              });
+            }
+          })();
+          break;
+        case "y":
+          (() => {
+            const data = this.history.redo().get();
+            this.setState({ data });
+            if (
+              this.props.onChange &&
+              typeof this.props.onChange === "function"
+            ) {
+              this.props.onChange({
+                data,
+                detail: {
+                  action: "undo",
+                },
+              });
+            }
+          })();
+          break;
+      }
+    }
+  }
+  handleCopy(event) {
+    const { data, currentId } = this.state;
+    const node = getNodeById(data, currentId);
+    const text = JSON.stringify(node);
+    if (text) {
+      event.clipboardData.setData("text/plain", `flow-graph-designer:${text}`);
+    }
+    event.preventDefault();
+  }
+  handlePaste(event) {
+    const clipboardData = event.clipboardData;
+    if (!(clipboardData && clipboardData.items)) {
+      return;
+    }
+    const text = clipboardData.getData("text/plain");
+    if (text.startsWith("flow-graph-designer:")) {
+      const { data: prevData, currentId } = this.state;
+      const nodeStr = text.substring("flow-graph-designer:".length);
+      const node = (() => {
+        try {
+          const value = JSON.parse(nodeStr);
+          return value;
+        } catch (e) {
+          return null;
+        }
+      })();
+      if (!node) {
+        return;
+      }
+      const { containerId, containerIndex } = (() => {
+        const unPasteResult = { containerId: null, containerIndex: null };
+        if (!currentId && node.type !== "case") {
+          // 如果没有当前节点，粘贴到根节点内部最后面的位置
+          return {
+            containerId: "root",
+            containerIndex: prevData.children.length,
+          };
+        }
+        const currentNode = getNodeById(prevData, currentId);
+        // 粘贴到内的情况
+        if (
+          (currentNode.type === "loop" && node.type !== "case") ||
+          (currentNode.type === "case" && node.type !== "case") ||
+          (currentNode.type === "switch" && node.type === "case")
+        ) {
+          return {
+            containerId: currentId,
+            containerIndex: currentNode.children.length,
+          };
+        }
+        if (node.type === "case" && currentNode.type !== "case") {
+          return unPasteResult;
+        }
+        const containerNode = getParentNodeById(prevData, currentId);
+        const containerIndex =
+          1 + containerNode.children.findIndex(x => x.id === currentId);
+        return { containerId: containerNode.id, containerIndex };
+      })();
+      if (!containerId) {
+        return;
+      }
+      const { data, copyDetail } = getNewFlowByPaste({
+        config: prevData,
+        sourceNode: node,
+        containerId,
+        containerIndex,
+      });
+      const sourceParentNode = getParentNodeById(data, node.id);
+      const sourceIndex = sourceParentNode.children.findIndex(
+        x => x.id === node.id
+      );
+      if (this.props.onChange && typeof this.props.onChange === "function") {
+        this.props.onChange({
+          data,
+          detail: {
+            action: "paste",
+            position: { id: sourceParentNode.id, index: sourceIndex },
+            position2: { id: containerId, index: containerIndex },
+            nodes: copyDetail.map(x => x.from),
+            nodes2: copyDetail.map(x => x.to),
+          },
+        });
+      }
+      this.handleClearState();
+      this.handleUpdateData(data);
+      return;
+    }
+  }
+  handleFocus() {
+    document.addEventListener("copy", this.handleCopy);
+    document.addEventListener("paste", this.handlePaste);
+    document.addEventListener("keyup", this.handleKeyUp);
+  }
+  handleBlur() {
+    document.removeEventListener("copy", this.handleCopy);
+    document.removeEventListener("paste", this.handlePaste);
+    document.removeEventListener("keyup", this.handleKeyUp);
   }
   handleClick(id) {
     return e => {
       e.stopPropagation();
       this.setState({
-        currentNode: id,
+        currentId: id,
       });
       if (this.props.onClick && typeof this.props.onClick === "function") {
         this.props.onClick(id);
@@ -136,7 +314,7 @@ class Workspace extends React.Component {
         });
       }
       this.handleClearState();
-      this.setState({ data: flow });
+      this.handleUpdateData(flow);
       return;
     }
     const { data: prevData } = this.state;
@@ -160,7 +338,8 @@ class Workspace extends React.Component {
         });
       }
       this.handleClearState();
-      this.setState({ data: flow });
+      this.setState({ currentId: null });
+      this.handleUpdateData(flow);
       return;
     }
     const action =
@@ -196,7 +375,7 @@ class Workspace extends React.Component {
         });
       }
       this.handleClearState();
-      this.setState({ data });
+      this.handleUpdateData(data);
       return;
     } else if (action === "move") {
       const { flow, nodes } = getNewFlowByMove({
@@ -221,7 +400,7 @@ class Workspace extends React.Component {
         });
       }
       this.handleClearState();
-      this.setState({ data: flow });
+      this.handleUpdateData(flow);
       return;
     }
   }
@@ -264,7 +443,7 @@ class Workspace extends React.Component {
           onClick={this.handleClick(node.id)}
           className={`${unexpandState ? "unexpand" : ""} flow-node loop ${
             this.state.dragId === node.id ? "draged" : ""
-          } ${this.state.currentNode === node.id ? "clicked" : ""}`}
+          } ${this.state.currentId === node.id ? "clicked" : ""}`}
           draggable="true"
           onDragStart={this.handleDragStart(node.id)}>
           <div className="title" onClick={this.handleClickExpandIcon(node.id)}>
@@ -302,7 +481,7 @@ class Workspace extends React.Component {
           key={node.id}
           className={`${unexpandState ? "unexpand" : ""} flow-node switch ${
             this.state.dragId === node.id ? "draged" : ""
-          } ${this.state.currentNode === node.id ? "clicked" : ""}`}
+          } ${this.state.currentId === node.id ? "clicked" : ""}`}
           draggable="true"
           onClick={this.handleClick(node.id)}
           onDragStart={this.handleDragStart(node.id)}>
@@ -334,7 +513,7 @@ class Workspace extends React.Component {
                   <div
                     className={`flow-node-rect ${
                       this.state.dragId === x.id ? "draged" : ""
-                    } ${this.state.currentNode === x.id ? "clicked" : ""}`}
+                    } ${this.state.currentId === x.id ? "clicked" : ""}`}
                     draggable="true"
                     onClick={this.handleClick(x.id)}
                     onDragStart={this.handleDragStart(x.id)}
@@ -398,7 +577,7 @@ class Workspace extends React.Component {
         key={node.id}
         className={`flow-node normal ${
           this.state.dragId === node.id ? "draged" : ""
-        } ${this.state.currentNode === node.id ? "clicked" : ""}`}
+        } ${this.state.currentId === node.id ? "clicked" : ""}`}
         style={{
           backgroundColor: color,
           boxShadow: `0 0 0 2px white, 0 0 0 3px ${color}`,
@@ -452,7 +631,13 @@ class Workspace extends React.Component {
       <div
         className={`flow-designer-workspace-wrap ${css.mainClass}`}
         style={this.props.style || {}}
-        onClick={this.handleClearState}>
+        ref={ref => {
+          this.ref = ref;
+        }}
+        tabIndex={0}
+        onClick={this.handleClearState}
+        onFocus={this.handleFocus}
+        onBlur={this.handleBlur}>
         {window.recycleWrap &&
           createPortal(
             <Recycle

@@ -39,6 +39,27 @@ export function getParentNodeById(node, id) {
   return null;
 }
 
+export function getPasteResultById(config, node, newIdFunc) {
+  const copyResult = { node: {}, copyDetail: [] };
+  const copydNode = node; // 拷贝节点
+  const newIds = []; // 存储新创建的ID
+  // 处理克隆后的节点，重新设置节点的ID
+  const processcopydNode = node => {
+    const prevId = node.id;
+    const nextId = newIdFunc(newIds); // 传递新创建的ID，避免重复
+    newIds.push(nextId);
+    node.id = nextId;
+    copyResult.copyDetail.push({ from: prevId, to: nextId });
+    if (node.children) {
+      for (let i = 0; i < node.children.length; i += 1) {
+        processcopydNode(node.children[i]);
+      }
+    }
+  };
+  processcopydNode(copydNode);
+  copyResult.node = copydNode;
+  return copyResult;
+}
 export function getcopyResultById(config, id, newIdFunc) {
   const copyResult = { node: {}, copyDetail: [] };
   const sourceNode = getNodeById(config, id); // 源节点
@@ -179,11 +200,43 @@ export function getNewFlowByMove({
         : containerIndex;
     sourceParentNode.children.splice(sourceIndex, 1);
     containerNode.children.splice(newIndex, 0, sourceNode);
+    if (sourceNode.type === "case" && !sourceParentNode.children.length) {
+      // 如果移动的是 switch 节点的唯一 case 节点，要删除 switch 节点
+      const node = getParentNodeById(draft, sourceParentNode.id);
+      const idnex = node.children.findIndex(x => x.id === sourceParentNode.id);
+      node.children.splice(idnex, 1);
+    }
   });
   return { flow, nodes };
 }
 /**
- * 返回节点拷贝后的新的流程对象，以及拷贝的节点
+ * 返回节点粘贴后的新的流程对象，以及操作信息
+ * @param {*} param0
+ */
+export function getNewFlowByPaste({
+  config,
+  sourceNode,
+  containerId,
+  containerIndex,
+}) {
+  let copyDetail = [];
+  const data = produce(config, draft => {
+    const containerNode = getNodeById(draft, containerId);
+    const copyResult = getPasteResultById(
+      config,
+      sourceNode,
+      getNewIdFunc(config)
+    );
+    copyDetail = copyResult.copyDetail;
+    containerNode.children.splice(containerIndex, 0, copyResult.node);
+  });
+  return {
+    data,
+    copyDetail,
+  };
+}
+/**
+ * 返回节点拷贝后的新的流程对象，以及操作信息
  * @param {*} param0
  */
 export function getNewFlowByCopy({
@@ -204,7 +257,6 @@ export function getNewFlowByCopy({
     if (sourceNode.type === "case" && containerNode.type !== "switch") {
       return;
     }
-
     // 其他节点不能移动或复制到【判断节点】
     if (sourceNode.type !== "case" && containerNode.type === "switch") {
       return;

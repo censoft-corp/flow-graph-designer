@@ -1,6 +1,15 @@
 # flow-graph-designer
 A react component that make flow graph by drag & drop.
 
+**feature**
+
+- auto layout
+- colorized node
+- mouse drag & drop support
+- copy & paste whether in one page or across multi pages
+- undo/redo support
+- action detail info
+
 ![demo image](https://raw.githubusercontent.com/censoft-corp/flow-graph-designer/master/demo.png)
 ## useage
 
@@ -63,7 +72,7 @@ const template = {
           "data:image/png;base64...U5ErkJggg==",    // src of icon on iconbar, could be base64 image or image url.
         props: {
           action: "open-page",
-          name: "打开网页",
+          name: "open page",
           type: "normal",
           showInToolbar: "Y",   // should show in toolbar
         },
@@ -81,7 +90,7 @@ data:
   id: 'root',
   type: 'normal',
   action: 'root',
-  name: '根节点'
+  name: 'root node'
   children: [
     id: '001',
     type: 'normal',     // control flow, value is one of : normal, loop, switch, case, stop-loop, stop

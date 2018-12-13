@@ -1,6 +1,6 @@
 {
   "name": "flow-graph-designer",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A React component capable of flow graph designer.",
   "scripts": {
     "build:readme": "toctoc README.md -w",
@@ -42,7 +42,8 @@
   },
   "dependencies": {
     "immer": "^1.3.1",
-    "prop-types": "^15.5.8"
+    "prop-types": "^15.5.8",
+    "stateshot": "^1.2.1"
   },
   "devDependencies": {
     "atob": "^2.0.3",
